@@ -1,0 +1,221 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ============ 用户体系 ============
+
+model User {
+  id           String   @id @default(cuid())
+  username     String   @unique
+  passwordHash String
+  nickname     String
+  avatarSeed   String
+  balance      Decimal  @db.Decimal(20, 4)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  positions Position[]
+  ledgers   Ledger[]
+  feedbacks Feedback[]
+  disputes  Dispute[]
+
+  @@index([balance])
+}
+
+model Admin {
+  id           String   @id @default(cuid())
+  username     String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+}
+
+// ============ 市场体系 ============
+
+enum MarketStatus {
+  DRAFT
+  ACTIVE
+  FROZEN
+  RESOLVING
+  RESOLVED
+  CANCELLED
+}
+
+enum MarketCategory {
+  A_SHARE
+  HK_US_STOCK
+  HOTSPOT
+}
+
+enum ResolveOutcome {
+  YES
+  NO
+  UNKNOWN
+}
+
+model Market {
+  id               String          @id @default(cuid())
+  title            String
+  description      String          @db.Text
+  resolutionRule   String          @db.Text
+  resolutionSource String          @db.Text
+  category         MarketCategory
+  aiBrief          String?         @db.Text
+
+  status     MarketStatus    @default(DRAFT)
+  closesAt   DateTime
+  resolvedAt DateTime?
+  outcome    ResolveOutcome?
+
+  poolYes    Decimal @db.Decimal(20, 4)
+  poolNo     Decimal @db.Decimal(20, 4)
+  seedAmount Decimal @db.Decimal(20, 4)
+
+  createdBy   String?
+  draftSource String?
+  createdAt   DateTime  @default(now())
+  publishedAt DateTime?
+  updatedAt   DateTime  @updatedAt
+
+  positions Position[]
+  trades    Trade[]
+  disputes  Dispute[]
+
+  @@index([status, closesAt])
+  @@index([category])
+}
+
+// ============ 持仓与交易 ============
+
+model Position {
+  id        String   @id @default(cuid())
+  userId    String
+  marketId  String
+  yesShares Decimal  @default(0) @db.Decimal(20, 4)
+  noShares  Decimal  @default(0) @db.Decimal(20, 4)
+  costYes   Decimal  @default(0) @db.Decimal(20, 4)
+  costNo    Decimal  @default(0) @db.Decimal(20, 4)
+  updatedAt DateTime @updatedAt
+
+  user   User   @relation(fields: [userId], references: [id])
+  market Market @relation(fields: [marketId], references: [id])
+
+  @@unique([userId, marketId])
+  @@index([marketId])
+}
+
+enum TradeSide {
+  YES
+  NO
+}
+
+model Trade {
+  id            String    @id @default(cuid())
+  userId        String
+  marketId      String
+  side          TradeSide
+  amountIn      Decimal   @db.Decimal(20, 4)
+  sharesOut     Decimal   @db.Decimal(20, 4)
+  priceAvg      Decimal   @db.Decimal(20, 6)
+  poolYesBefore Decimal   @db.Decimal(20, 4)
+  poolNoBefore  Decimal   @db.Decimal(20, 4)
+  poolYesAfter  Decimal   @db.Decimal(20, 4)
+  poolNoAfter   Decimal   @db.Decimal(20, 4)
+  createdAt     DateTime  @default(now())
+
+  market Market @relation(fields: [marketId], references: [id])
+
+  @@index([userId, createdAt])
+  @@index([marketId, createdAt])
+}
+
+// ============ 积分账本 ============
+
+enum LedgerType {
+  REGISTER_BONUS
+  TRADE_DEBIT
+  RESOLVE_PAYOUT
+  CANCEL_REFUND
+  TIMEOUT_REFUND
+  ADMIN_ADJUST
+}
+
+model Ledger {
+  id           String     @id @default(cuid())
+  userId       String
+  type         LedgerType
+  amount       Decimal    @db.Decimal(20, 4)
+  balanceAfter Decimal    @db.Decimal(20, 4)
+  refMarketId  String?
+  refTradeId   String?
+  note         String?
+  createdAt    DateTime   @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId, createdAt])
+  @@index([type])
+}
+
+// ============ 用户反馈与异议 ============
+
+enum FeedbackStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+model Feedback {
+  id               String         @id @default(cuid())
+  userId           String
+  title            String
+  expectedClosesAt DateTime?
+  description      String         @db.Text
+  status           FeedbackStatus @default(PENDING)
+  adminNote        String?
+  createdAt        DateTime       @default(now())
+  reviewedAt       DateTime?
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([status, createdAt])
+}
+
+enum DisputeStatus {
+  PENDING
+  REJECTED
+  ACCEPTED
+}
+
+model Dispute {
+  id         String        @id @default(cuid())
+  userId     String
+  marketId   String
+  reason     String        @db.Text
+  status     DisputeStatus @default(PENDING)
+  adminNote  String?
+  createdAt  DateTime      @default(now())
+  reviewedAt DateTime?
+
+  user   User   @relation(fields: [userId], references: [id])
+  market Market @relation(fields: [marketId], references: [id])
+
+  @@index([status, createdAt])
+  @@index([marketId])
+}
+
+// ============ AI 出题与新闻源 ============
+
+model NewsSource {
+  id        String         @id @default(cuid())
+  name      String
+  url       String
+  category  MarketCategory
+  enabled   Boolean        @default(true)
+  weight    Int            @default(1)
+  createdAt DateTime       @default(now())
+}

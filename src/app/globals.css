@@ -1,26 +1,26 @@
 @import "tailwindcss";
 
 :root {
-  /* PSQ_THEME light palette — see prediction square/theme.js */
-  --bg: #faf8f4;
-  --surface: #ffffff;
-  --surface-alt: #f5f2ec;
-  --text: #0f1419;
-  --sub: #5c6168;
-  --mut: #9aa0a6;
-  --line: rgba(15, 20, 25, 0.08);
-  --line-hard: rgba(15, 20, 25, 0.16);
-  --yes: #0f7a4e;
-  --yes-bg: #e6f4ec;
-  --yes-soft: #f2f9f5;
-  --no: #c73838;
-  --no-bg: #fbeae9;
-  --no-soft: #fdf4f3;
-  --accent: #0f1419;
-  --accent-bg: #f0ede6;
-  --chip: #f0ede6;
-  --placeholder: #e8e3d8;
-  --gold: #b58a2a;
+  /* PSQ_THEME dark palette — see prediction square/theme.js */
+  --bg: #15161a;
+  --surface: #1e1f24;
+  --surface-alt: #272930;
+  --text: #f2efe8;
+  --sub: #a0a4ae;
+  --mut: #6b6f78;
+  --line: rgba(242, 239, 232, 0.08);
+  --line-hard: rgba(242, 239, 232, 0.18);
+  --yes: #5bd08a;
+  --yes-bg: rgba(91, 208, 138, 0.14);
+  --yes-soft: rgba(91, 208, 138, 0.07);
+  --no: #ff7b7b;
+  --no-bg: rgba(255, 123, 123, 0.14);
+  --no-soft: rgba(255, 123, 123, 0.07);
+  --accent: #f2efe8;
+  --accent-bg: rgba(242, 239, 232, 0.06);
+  --chip: #26282e;
+  --placeholder: #2a2c32;
+  --gold: #e0b85a;
 }
 
 @theme inline {
@@ -48,6 +48,7 @@
   --font-mono: var(--font-plex-mono), "JetBrains Mono", ui-monospace, monospace;
 }
 
+html,
 body {
   background: var(--bg);
   color: var(--text);

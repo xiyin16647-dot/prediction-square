@@ -3,6 +3,8 @@ import { UserStrip, GuestStrip } from "@/components/UserStrip";
 import { CategoryTabs } from "@/components/CategoryTabs";
 import { MarketCard, type MarketCardData } from "@/components/MarketCard";
 import { MarketRail, type RailItem } from "@/components/MarketRail";
+import { SortChips } from "@/components/SortChips";
+import { BottomTabBar } from "@/components/BottomTabBar";
 import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import {
@@ -149,7 +151,7 @@ export default async function HomePage({
       : CATEGORY_LABELS[cat as CategoryKey] ?? "全部";
 
   return (
-    <main className="flex-1 mx-auto w-full max-w-[420px] flex flex-col bg-bg">
+    <main className="flex-1 mx-auto w-full max-w-[420px] flex flex-col bg-bg min-h-screen">
       <SquareHeader />
       {user ? (
         <UserStrip
@@ -191,6 +193,7 @@ export default async function HomePage({
             {mainTitle} · {mainCards.length} 条
           </span>
         </div>
+        <SortChips active="hot" />
         {mainCards.length === 0 ? (
           <div className="px-[18px] py-8 text-center text-sub text-sm">
             该分类暂无市场
@@ -198,17 +201,9 @@ export default async function HomePage({
         ) : (
           mainCards.map((c) => <MarketCard key={c.id} m={c} />)
         )}
-        {user && (
-          <div className="px-[18px] py-4 text-center">
-            <form action="/api/auth/logout" method="post">
-              <button type="submit" className="text-[11px] text-sub">
-                退出登录（{user.nickname}）
-              </button>
-            </form>
-          </div>
-        )}
         <div className="h-3" />
       </div>
+      <BottomTabBar active="square" />
     </main>
   );
 }

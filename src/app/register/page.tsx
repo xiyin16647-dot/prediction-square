@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { PasswordInput } from "@/components/PasswordInput";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -74,8 +75,7 @@ export default function RegisterPage() {
 
         <div>
           <label className="block text-sm font-medium mb-1 text-text">密码</label>
-          <input
-            type="password"
+          <PasswordInput
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className="w-full px-3 py-2 bg-bg border border-line-hard rounded text-text placeholder:text-mut focus:outline-none focus:border-text"
@@ -89,8 +89,7 @@ export default function RegisterPage() {
 
         <div>
           <label className="block text-sm font-medium mb-1 text-text">确认密码</label>
-          <input
-            type="password"
+          <PasswordInput
             value={confirm}
             onChange={(e) => setConfirm(e.target.value)}
             className="w-full px-3 py-2 bg-bg border border-line-hard rounded text-text placeholder:text-mut focus:outline-none focus:border-text"

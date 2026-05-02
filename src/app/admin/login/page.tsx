@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { PasswordInput } from "@/components/PasswordInput";
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -65,12 +66,12 @@ export default function AdminLoginPage() {
           <label className="block text-xs text-admin-sub mb-1.5 font-semibold">
             密码
           </label>
-          <input
-            type="password"
+          <PasswordInput
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             autoComplete="current-password"
             className="w-full px-3 py-2 bg-admin-bg border border-admin-line-hard rounded text-admin-text text-sm focus:outline-none focus:border-admin-primary"
+            toggleClassName="text-admin-sub"
           />
         </div>
         {error && (

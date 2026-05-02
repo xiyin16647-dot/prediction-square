@@ -1,26 +1,55 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* PSQ_THEME light palette — see prediction square/theme.js */
+  --bg: #faf8f4;
+  --surface: #ffffff;
+  --surface-alt: #f5f2ec;
+  --text: #0f1419;
+  --sub: #5c6168;
+  --mut: #9aa0a6;
+  --line: rgba(15, 20, 25, 0.08);
+  --line-hard: rgba(15, 20, 25, 0.16);
+  --yes: #0f7a4e;
+  --yes-bg: #e6f4ec;
+  --yes-soft: #f2f9f5;
+  --no: #c73838;
+  --no-bg: #fbeae9;
+  --no-soft: #fdf4f3;
+  --accent: #0f1419;
+  --accent-bg: #f0ede6;
+  --chip: #f0ede6;
+  --placeholder: #e8e3d8;
+  --gold: #b58a2a;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-alt: var(--surface-alt);
+  --color-text: var(--text);
+  --color-sub: var(--sub);
+  --color-mut: var(--mut);
+  --color-line: var(--line);
+  --color-line-hard: var(--line-hard);
+  --color-yes: var(--yes);
+  --color-yes-bg: var(--yes-bg);
+  --color-yes-soft: var(--yes-soft);
+  --color-no: var(--no);
+  --color-no-bg: var(--no-bg);
+  --color-no-soft: var(--no-soft);
+  --color-accent: var(--accent);
+  --color-accent-bg: var(--accent-bg);
+  --color-chip: var(--chip);
+  --color-gold: var(--gold);
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-serif: var(--font-source-serif), "Noto Serif SC", "Songti SC", Georgia, serif;
+  --font-sans: var(--font-inter), -apple-system, "PingFang SC", "Helvetica Neue", sans-serif;
+  --font-mono: var(--font-plex-mono), "JetBrains Mono", ui-monospace, monospace;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
 }

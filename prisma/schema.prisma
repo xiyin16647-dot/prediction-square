@@ -46,9 +46,13 @@ enum MarketStatus {
 }
 
 enum MarketCategory {
-  A_SHARE
-  HK_US_STOCK
-  HOTSPOT
+  FINANCE
+  TECH
+  ENTERTAINMENT
+  SPORTS
+  SOCIETY
+  TRENDY
+  OTHER
 }
 
 enum ResolveOutcome {

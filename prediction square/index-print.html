@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Prediction Square 先行版 — 原型 v2 (Print)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,600;1,700&family=Noto+Serif+SC:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  html, body { margin: 0; padding: 0; background: #FFFFFF; }
+  body { font-family: 'Inter', -apple-system, 'PingFang SC', 'Helvetica Neue', sans-serif; color: #1A1A1A; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  * { box-sizing: border-box; }
+  button { font-family: inherit; cursor: default !important; }
+  div::-webkit-scrollbar, button::-webkit-scrollbar { width: 0; height: 0; }
+
+  .print-page {
+    width: 100%;
+    page-break-after: always;
+    break-after: page;
+    padding: 18mm 14mm;
+    background: #fff;
+  }
+  .print-page:last-child { page-break-after: auto; break-after: auto; }
+  .page-title {
+    font-family: 'Source Serif 4', 'Noto Serif SC', serif;
+    font-size: 22px; font-weight: 700; letter-spacing: -0.3px; margin: 0 0 4px;
+  }
+  .page-sub { font-size: 12px; color: #666; margin: 0 0 18px; }
+  .phone-row {
+    display: flex; gap: 22px; justify-content: center; align-items: flex-start;
+    flex-wrap: wrap;
+  }
+  .phone-cell { display: flex; flex-direction: column; align-items: center; gap: 8px; break-inside: avoid; }
+  .phone-cap {
+    font-size: 11px; color: #888; font-weight: 600; letter-spacing: 0.5px;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  /* hide tweaks panel & canvas chrome on print */
+  .tweaks-panel, .design-canvas-chrome { display: none !important; }
+
+  @page { size: A3 landscape; margin: 0; }
+  @media print {
+    .print-page { padding: 14mm 12mm; }
+    .phone-row { gap: 18px; }
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script src="data.js"></script>
+<script src="data-ext.js"></script>
+<script src="theme.js"></script>
+<script type="text/babel" src="primitives.jsx"></script>
+<script type="text/babel" src="page-square.jsx"></script>
+<script type="text/babel" src="page-detail.jsx"></script>
+<script type="text/babel" src="page-other.jsx"></script>
+
+<script type="text/babel" data-presets="react">
+const { Phone, TabBar, SquarePage, DetailPage, RankPage, MessagesPage, MePage } = window;
+
+function StaticScreen({ kind, theme, density, eventId }) {
+  const c = window.PSQ_THEME[theme] || window.PSQ_THEME.dark;
+  const dense = density === 'high';
+  const F = window.PSQ_FONTS;
+  return (
+    <Phone c={c} screenLabel={kind}>
+      <div style={{ height: 44, padding: '0 22px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontFamily: F.sans, fontSize: 15, color: c.text, fontWeight: 600, flexShrink: 0 }}>
+        <span>9:41</span>
+        <span style={{ width: 16, height: 10, borderRadius: 2.5, border: `1.4px solid ${c.text}`, position: 'relative' }}>
+          <span style={{ position: 'absolute', inset: 1.4, background: c.text, width: '78%', borderRadius: 1 }} />
+        </span>
+      </div>
+      {kind === 'square' && <SquarePage c={c} dense={dense} onOpen={() => {}} onOpenRank={() => {}} />}
+      {kind === 'rank'   && <RankPage c={c} />}
+      {kind === 'msg'    && <MessagesPage c={c} />}
+      {kind === 'me'     && <MePage c={c} />}
+      {kind === 'detail' && <DetailPage c={c} eventId={eventId || 'e1'} onBack={() => {}} />}
+      {kind !== 'detail' && <TabBar c={c} active={kind} onChange={() => {}} />}
+    </Phone>
+  );
+}
+
+function PrintPage({ title, sub, screens }) {
+  return (
+    <div className="print-page">
+      <h1 className="page-title">{title}</h1>
+      {sub && <p className="page-sub">{sub}</p>}
+      <div className="phone-row">
+        {screens.map((s, i) => (
+          <div key={i} className="phone-cell">
+            <StaticScreen {...s} />
+            <div className="phone-cap">{s.cap}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <React.Fragment>
+      <PrintPage
+        title="① 广场（首页）"
+        sub="最新市场（横滑） → 热门市场（4 排序 tab：热度/成交量/即将截止/最新） → 高手榜 → 热门观点"
+        screens={[
+          { kind: 'square', theme: 'dark',  density: 'medium', cap: '深色 · 中密度' },
+          { kind: 'square', theme: 'dark',  density: 'high',   cap: '深色 · 高密度' },
+          { kind: 'square', theme: 'light', density: 'medium', cap: '浅色 · 中密度' },
+        ]}
+      />
+      <PrintPage
+        title="② 预测详情 + 投注流程"
+        sub="标题 → 共识可视化 → AI 轻解读 → 热门观点 → 下注 → 成功反馈"
+        screens={[
+          { kind: 'detail', theme: 'dark',  eventId: 'e1', cap: '详情 · 深色' },
+          { kind: 'detail', theme: 'light', eventId: 'e1', cap: '详情 · 浅色' },
+        ]}
+      />
+      <PrintPage
+        title="③ 排行榜"
+        sub="日/周/月/总 × 收益率/胜率/连胜 · 三甲讲台 + 列表 + 我的位置"
+        screens={[
+          { kind: 'rank', theme: 'dark',  cap: '深色' },
+          { kind: 'rank', theme: 'light', cap: '浅色' },
+        ]}
+      />
+      <PrintPage
+        title="④ 消息 + ⑤ 我的"
+        sub="消息中心 / 个人主页 · 累计盈亏 + 胜率 + 预测历史"
+        screens={[
+          { kind: 'msg', theme: 'dark',  cap: '消息 · 深色' },
+          { kind: 'me',  theme: 'dark',  cap: '我的 · 深色' },
+          { kind: 'me',  theme: 'light', cap: '我的 · 浅色' },
+        ]}
+      />
+    </React.Fragment>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+
+// Auto-print after fonts and JSX have loaded
+if (document.fonts && document.fonts.ready) {
+  document.fonts.ready.then(() => setTimeout(() => window.print(), 800));
+} else {
+  setTimeout(() => window.print(), 1500);
+}
+</script>
+</body>
+</html>

@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  /* PSQ_THEME dark palette — see prediction square/theme.js */
+  /* PSQ_THEME dark palette — 用户端 */
   --bg: #15161a;
   --surface: #1e1f24;
   --surface-alt: #272930;
@@ -21,6 +21,27 @@
   --chip: #26282e;
   --placeholder: #2a2c32;
   --gold: #e0b85a;
+
+  /* ADMIN_TOKENS light palette — 管理后台 */
+  --admin-bg: #f7f8fa;
+  --admin-surface: #ffffff;
+  --admin-surface-alt: #f1f2f5;
+  --admin-text: #0f1115;
+  --admin-text-mid: #3a3f47;
+  --admin-sub: #6b7280;
+  --admin-mut: #9ca3af;
+  --admin-line: #e5e7eb;
+  --admin-line-soft: #eef0f3;
+  --admin-line-hard: #d1d5db;
+  --admin-primary: #1f2937;
+  --admin-warn: #b45309;
+  --admin-warn-bg: #fef3c7;
+  --admin-danger: #b91c1c;
+  --admin-danger-bg: #fee2e2;
+  --admin-ok: #15803d;
+  --admin-ok-bg: #dcfce7;
+  --admin-info: #1e40af;
+  --admin-info-bg: #dbeafe;
 }
 
 @theme inline {
@@ -42,6 +63,26 @@
   --color-accent-bg: var(--accent-bg);
   --color-chip: var(--chip);
   --color-gold: var(--gold);
+
+  --color-admin-bg: var(--admin-bg);
+  --color-admin-surface: var(--admin-surface);
+  --color-admin-surface-alt: var(--admin-surface-alt);
+  --color-admin-text: var(--admin-text);
+  --color-admin-text-mid: var(--admin-text-mid);
+  --color-admin-sub: var(--admin-sub);
+  --color-admin-mut: var(--admin-mut);
+  --color-admin-line: var(--admin-line);
+  --color-admin-line-soft: var(--admin-line-soft);
+  --color-admin-line-hard: var(--admin-line-hard);
+  --color-admin-primary: var(--admin-primary);
+  --color-admin-warn: var(--admin-warn);
+  --color-admin-warn-bg: var(--admin-warn-bg);
+  --color-admin-danger: var(--admin-danger);
+  --color-admin-danger-bg: var(--admin-danger-bg);
+  --color-admin-ok: var(--admin-ok);
+  --color-admin-ok-bg: var(--admin-ok-bg);
+  --color-admin-info: var(--admin-info);
+  --color-admin-info-bg: var(--admin-info-bg);
 
   --font-serif: var(--font-source-serif), "Noto Serif SC", "Songti SC", Georgia, serif;
   --font-sans: var(--font-inter), -apple-system, "PingFang SC", "Helvetica Neue", sans-serif;

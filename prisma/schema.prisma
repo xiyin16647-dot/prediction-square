@@ -63,12 +63,11 @@ enum ResolveOutcome {
 
 model Market {
   id               String          @id @default(cuid())
-  title            String
-  description      String          @db.Text
-  resolutionRule   String          @db.Text
-  resolutionSource String          @db.Text
-  category         MarketCategory
-  aiBrief          String?         @db.Text
+  title          String
+  description    String          @db.Text
+  resolutionRule String          @db.Text
+  category       MarketCategory
+  aiBrief        String?         @db.Text
 
   status     MarketStatus    @default(DRAFT)
   closesAt   DateTime

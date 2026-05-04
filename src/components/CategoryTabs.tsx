@@ -2,7 +2,6 @@ import Link from "next/link";
 
 const TABS: { id: string; label: string }[] = [
   { id: "recommend", label: "推荐" },
-  { id: "hot", label: "热门" },
   { id: "FINANCE", label: "金融" },
   { id: "TECH", label: "科技" },
   { id: "ENTERTAINMENT", label: "娱乐" },

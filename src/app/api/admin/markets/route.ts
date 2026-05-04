@@ -10,7 +10,6 @@ const Schema = z.object({
   title: z.string().min(5).max(120),
   description: z.string().min(1).max(2000),
   resolutionRule: z.string().min(1).max(2000),
-  resolutionSource: z.string().min(1).max(500),
   category: z.enum([
     "FINANCE",
     "TECH",
@@ -48,7 +47,6 @@ export async function POST(request: Request) {
     title,
     description,
     resolutionRule,
-    resolutionSource,
     category,
     aiBrief,
     closesAt,
@@ -77,7 +75,6 @@ export async function POST(request: Request) {
       title,
       description,
       resolutionRule,
-      resolutionSource,
       category,
       aiBrief: aiBrief ?? null,
       status: "ACTIVE",

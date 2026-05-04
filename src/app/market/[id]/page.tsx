@@ -105,16 +105,10 @@ export default async function MarketDetailPage({
             <span className="ml-auto">{formatDeadline(market.closesAt)}</span>
           </div>
           <div
-            className="font-serif text-[22px] font-bold leading-[1.3] text-text mb-2"
+            className="font-serif text-[22px] font-bold leading-[1.3] text-text"
             style={{ letterSpacing: "-0.4px" }}
           >
             {market.title}
-          </div>
-          <div className="text-[13px] text-sub leading-[1.55] font-sans">
-            {market.description}
-          </div>
-          <div className="text-[11px] text-mut mt-2 font-sans">
-            结果来源：{market.resolutionSource}
           </div>
         </div>
 
@@ -155,26 +149,41 @@ export default async function MarketDetailPage({
           )}
         </div>
 
-        {/* AI 轻解读（简化版：单段） */}
-        {market.aiBrief && (
-          <div className="mx-[18px] mb-4 p-4 bg-accent-bg border border-line rounded-2xl font-sans">
-            <div className="flex items-center gap-1.5 mb-2.5">
-              <span className="size-[22px] rounded-md bg-accent text-bg flex items-center justify-center text-xs font-bold">
+        {/* 解读：背景 + AI 分析 */}
+        <div className="mx-[18px] mb-4 p-4 bg-accent-bg border border-line rounded-2xl font-sans">
+          <div className="flex items-center gap-1.5 mb-3">
+            <span className="text-[14px] font-bold text-text">解读</span>
+            {market.aiBrief && (
+              <span className="px-1.5 py-0.5 rounded bg-accent text-bg text-[10px] font-bold tracking-wider">
                 AI
               </span>
-              <span className="text-[13px] font-bold text-text">AI 轻解读</span>
+            )}
+          </div>
+          <div className={market.aiBrief ? "mb-3" : ""}>
+            <div className="text-[11px] text-sub font-semibold mb-1">
+              市场背景
             </div>
             <div className="text-[13px] text-text leading-[1.6]">
-              {market.aiBrief}
+              {market.description}
             </div>
           </div>
-        )}
+          {market.aiBrief && (
+            <div>
+              <div className="text-[11px] text-sub font-semibold mb-1">
+                AI 分析
+              </div>
+              <div className="text-[13px] text-text leading-[1.6]">
+                {market.aiBrief}
+              </div>
+            </div>
+          )}
+        </div>
 
         {/* 持仓简览（已下注用户可见） */}
         {userPosition &&
           (userPosition.yesShares > 0 || userPosition.noShares > 0) && (
             <div className="mx-[18px] mb-4 p-4 bg-surface border border-line rounded-2xl font-sans">
-              <div className="text-[12px] text-sub mb-2">我的持仓</div>
+              <div className="text-[12px] text-sub mb-2">我的预测</div>
               <div className="flex gap-3">
                 {userPosition.yesShares > 0 && (
                   <div className="flex-1 p-3 bg-yes-bg rounded-xl">

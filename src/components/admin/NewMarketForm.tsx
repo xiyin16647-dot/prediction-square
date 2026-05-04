@@ -15,13 +15,14 @@ const CATEGORIES = [
 
 type CategoryKey = (typeof CATEGORIES)[number][0];
 
+type AiField = "description" | "resolutionRule" | "aiBrief" | "initialYesPct";
+
 export function NewMarketForm() {
   const router = useRouter();
   const [form, setForm] = useState({
     title: "",
     description: "",
     resolutionRule: "",
-    resolutionSource: "",
     category: "FINANCE" as CategoryKey,
     aiBrief: "",
     closesAt: "",
@@ -30,9 +31,46 @@ export function NewMarketForm() {
   });
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [aiLoading, setAiLoading] = useState<AiField | null>(null);
+  const [aiError, setAiError] = useState<string | null>(null);
 
   function set<K extends keyof typeof form>(k: K, v: (typeof form)[K]) {
     setForm((f) => ({ ...f, [k]: v }));
+  }
+
+  async function aiSuggest(field: AiField) {
+    setAiError(null);
+    if (form.title.trim().length < 5) {
+      setAiError("先填题目（至少 5 字）再用 AI 推荐");
+      return;
+    }
+    setAiLoading(field);
+    try {
+      const res = await fetch("/api/admin/ai-suggest", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          field,
+          title: form.title,
+          category: form.category,
+          closesAt: form.closesAt || undefined,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setAiError(data.error ?? "AI 调用失败");
+        return;
+      }
+      if (field === "initialYesPct") {
+        set("initialYesPct", Number(data.value));
+      } else {
+        set(field, String(data.value));
+      }
+    } catch {
+      setAiError("网络错误");
+    } finally {
+      setAiLoading(null);
+    }
   }
 
   async function submit(e: React.FormEvent) {
@@ -64,6 +102,17 @@ export function NewMarketForm() {
     }
   }
 
+  const aiBtn = (field: AiField) => (
+    <button
+      type="button"
+      onClick={() => aiSuggest(field)}
+      disabled={aiLoading !== null}
+      className="text-[11px] text-admin-primary font-semibold hover:opacity-80 disabled:opacity-40"
+    >
+      {aiLoading === field ? "AI 写作中…" : "✨ AI 写"}
+    </button>
+  );
+
   return (
     <form onSubmit={submit} className="max-w-2xl space-y-4">
       <Field label="题目">
@@ -78,7 +127,7 @@ export function NewMarketForm() {
           placeholder="如：美联储 6 月议息会议是否会降息 25bp？"
         />
       </Field>
-      <Field label="详细说明">
+      <Field label="详细说明" action={aiBtn("description")}>
         <textarea
           value={form.description}
           onChange={(e) => set("description", e.target.value)}
@@ -88,7 +137,7 @@ export function NewMarketForm() {
           placeholder="背景、当前情况"
         />
       </Field>
-      <Field label="结算规则">
+      <Field label="结算规则" action={aiBtn("resolutionRule")}>
         <textarea
           value={form.resolutionRule}
           onChange={(e) => set("resolutionRule", e.target.value)}
@@ -96,16 +145,6 @@ export function NewMarketForm() {
           rows={2}
           className="w-full px-3 py-2 bg-admin-surface border border-admin-line-hard rounded text-admin-text text-sm focus:outline-none focus:border-admin-primary resize-none"
           placeholder="精确说明什么算 YES，例如：6/12 FOMC 决议降息 ≥ 25bp 即 YES"
-        />
-      </Field>
-      <Field label="结果来源">
-        <input
-          type="text"
-          value={form.resolutionSource}
-          onChange={(e) => set("resolutionSource", e.target.value)}
-          required
-          className="w-full px-3 py-2 bg-admin-surface border border-admin-line-hard rounded text-admin-text text-sm focus:outline-none focus:border-admin-primary"
-          placeholder="如：Federal Reserve 官方公告 / https://..."
         />
       </Field>
       <div className="grid grid-cols-2 gap-3">
@@ -132,7 +171,7 @@ export function NewMarketForm() {
           />
         </Field>
       </div>
-      <Field label="AI 轻解读（可选）">
+      <Field label="AI 轻解读（可选）" action={aiBtn("aiBrief")}>
         <textarea
           value={form.aiBrief}
           onChange={(e) => set("aiBrief", e.target.value)}
@@ -142,7 +181,7 @@ export function NewMarketForm() {
         />
       </Field>
       <div className="grid grid-cols-2 gap-3">
-        <Field label="初始 YES 概率（%）">
+        <Field label="初始 YES 概率（%）" action={aiBtn("initialYesPct")}>
           <input
             type="number"
             min={1}
@@ -172,6 +211,11 @@ export function NewMarketForm() {
         </Field>
       </div>
 
+      {aiError && (
+        <div className="text-[12px] text-admin-danger bg-admin-danger-bg p-2 rounded">
+          {aiError}
+        </div>
+      )}
       {error && (
         <div className="text-[12px] text-admin-danger bg-admin-danger-bg p-2 rounded">
           {error}
@@ -201,16 +245,21 @@ export function NewMarketForm() {
 
 function Field({
   label,
+  action,
   children,
 }: {
   label: string;
+  action?: React.ReactNode;
   children: React.ReactNode;
 }) {
   return (
     <div>
-      <label className="block text-[12px] text-admin-sub mb-1.5 font-semibold">
-        {label}
-      </label>
+      <div className="flex items-center justify-between mb-1.5">
+        <label className="block text-[12px] text-admin-sub font-semibold">
+          {label}
+        </label>
+        {action}
+      </div>
       {children}
     </div>
   );

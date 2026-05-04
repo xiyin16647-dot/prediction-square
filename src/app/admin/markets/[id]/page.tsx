@@ -117,13 +117,12 @@ export default async function AdminMarketDetailPage({
               </p>
               <div className="grid grid-cols-2 gap-2.5">
                 <Field label="判定截止时间" value={fmt(market.closesAt)} mono />
-                <Field label="结果来源" value={market.resolutionSource} />
+                <Field label="发布时间" value={fmt(market.publishedAt)} mono />
                 <Field
                   label="结算规则"
                   value={market.resolutionRule}
                   colSpan={2}
                 />
-                <Field label="发布时间" value={fmt(market.publishedAt)} mono />
                 <Field label="结算时间" value={fmt(market.resolvedAt)} mono />
               </div>
             </div>

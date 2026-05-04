@@ -15,7 +15,6 @@ interface SeedMarket {
   title: string;
   description: string;
   resolutionRule: string;
-  resolutionSource: string;
   category:
     | "FINANCE"
     | "TECH"
@@ -38,7 +37,6 @@ const SEED_MARKETS: SeedMarket[] = [
     description:
       "当前市场预期分化，CPI 数据将于会前公布。多位官员近期讲话偏鸽。",
     resolutionRule: "以美联储官方公告为准。降息幅度 ≥ 25bp 算 YES。",
-    resolutionSource: "https://www.federalreserve.gov/newsevents/pressreleases.htm",
     category: "FINANCE",
     closesInMs: 7 * DAY,
     publishedAgoMs: 2 * HOUR,
@@ -51,7 +49,6 @@ const SEED_MARKETS: SeedMarket[] = [
     title: "iPhone 17 Pro 全球首发周销量是否突破 1500 万台？",
     description: "分析师预期区间 1300–1700 万台。需以 Apple 财报披露口径为准。",
     resolutionRule: "Apple 公布的首发周（含周末）激活/出货量 ≥ 1500 万为 YES。",
-    resolutionSource: "Apple 季度财报",
     category: "TECH",
     closesInMs: 14 * DAY,
     publishedAgoMs: 4 * HOUR,
@@ -64,7 +61,6 @@ const SEED_MARKETS: SeedMarket[] = [
     description: "当前价 108,420 美元，距离目标 +10.7%。现货 ETF 资金近期净流入。",
     resolutionRule:
       "以 Coinbase 现货 BTC/USD 在 6 月 30 日 24:00 UTC 前任意时刻 ≥ 120,000 为 YES。",
-    resolutionSource: "https://www.coinbase.com/price/bitcoin",
     category: "FINANCE",
     closesInMs: 28 * DAY,
     publishedAgoMs: 6 * HOUR,
@@ -76,7 +72,6 @@ const SEED_MARKETS: SeedMarket[] = [
     title: "《长安二十四时》上映首周末票房是否破 6 亿？",
     description: "猫眼专业版预测区间 5.2–6.8 亿。开画口碑分化。",
     resolutionRule: "猫眼专业版口径，首周末（周五至周日）累计票房 ≥ 6 亿为 YES。",
-    resolutionSource: "https://piaofang.maoyan.com/",
     category: "ENTERTAINMENT",
     closesInMs: 5 * DAY,
     publishedAgoMs: 12 * HOUR,
@@ -88,7 +83,6 @@ const SEED_MARKETS: SeedMarket[] = [
     title: "湖人能否在西部决赛抢七中获胜？",
     description: "主场作战，詹姆斯出战时间存疑。",
     resolutionRule: "NBA 官方比分页面为准，湖人胜出为 YES。",
-    resolutionSource: "https://www.nba.com/games",
     category: "SPORTS",
     closesInMs: 18 * HOUR,
     publishedAgoMs: 18 * HOUR,
@@ -100,7 +94,6 @@ const SEED_MARKETS: SeedMarket[] = [
     title: "Labubu 新款上市首日是否售罄？",
     description: "泡泡玛特新品发售，预计供应量有限。",
     resolutionRule: "泡泡玛特官方商城首日 24h 内显示售罄为 YES。",
-    resolutionSource: "https://www.popmart.com/",
     category: "TRENDY",
     closesInMs: 4 * DAY,
     publishedAgoMs: 22 * HOUR,
@@ -112,7 +105,6 @@ const SEED_MARKETS: SeedMarket[] = [
     title: "5 月份全国出生人口是否超过 80 万？",
     description: "国家统计局数据预计 6 月中旬公布。",
     resolutionRule: "国家统计局公布的 5 月出生人口 ≥ 80 万为 YES。",
-    resolutionSource: "国家统计局官方网站",
     category: "SOCIETY",
     closesInMs: 20 * DAY,
     publishedAgoMs: 1 * DAY,
@@ -132,7 +124,6 @@ async function main() {
         title: m.title,
         description: m.description,
         resolutionRule: m.resolutionRule,
-        resolutionSource: m.resolutionSource,
         category: m.category,
         aiBrief: m.aiBrief ?? null,
         status: "ACTIVE",

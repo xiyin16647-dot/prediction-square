@@ -274,7 +274,7 @@ export function BetSheet(props: BetSheetProps) {
             <div className="p-3 bg-surface border border-line rounded-xl text-[12px] text-sub leading-[1.5] mb-4">
               结算后赢家按 1 积分/份兑付。可在
               <b className="text-text">「我的」</b>
-              查看持仓与历史。
+              查看预测与历史。
             </div>
             <button
               type="button"

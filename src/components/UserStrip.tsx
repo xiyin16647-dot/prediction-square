@@ -29,10 +29,10 @@ export function UserStrip({ balance, todayPnl }: UserStripProps) {
         </div>
       </div>
       <Link
-        href="/positions"
+        href="/me"
         className="ml-auto px-2.5 py-1.5 bg-text text-bg rounded-full text-[11px] font-semibold"
       >
-        我的持仓
+        我的预测
       </Link>
     </div>
   );

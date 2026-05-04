@@ -190,7 +190,7 @@ export async function POST(request: Request) {
           newPoolNo: buy.newPoolNo.toFixed(4),
         };
       },
-      { isolationLevel: "Serializable" },
+      { isolationLevel: "Serializable", timeout: 15000, maxWait: 5000 },
     );
 
     return NextResponse.json({ success: true, ...result });

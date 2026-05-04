@@ -8,6 +8,7 @@ export interface MarketCardData {
   category: CategoryKey;
   isAi: boolean;
   isHot: boolean;
+  hasPosition: boolean;
   deadline: string;
   yesPct: number;
   noPct: number;
@@ -71,6 +72,11 @@ export function MarketCard({ m }: { m: MarketCardData }) {
         )}
         {m.isHot && (
           <span className="text-no font-semibold text-[11px]">🔥 热议</span>
+        )}
+        {m.hasPosition && (
+          <span className="px-2 py-0.5 rounded bg-yes-bg text-yes font-bold text-[10px]">
+            已下注
+          </span>
         )}
         <span className="ml-auto font-mono">{m.deadline}</span>
       </div>

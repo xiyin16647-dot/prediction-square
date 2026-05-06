@@ -9,6 +9,7 @@ export interface MarketCardData {
   isAi: boolean;
   isHot: boolean;
   hasPosition: boolean;
+  hasParticipants: boolean;
   deadline: string;
   yesPct: number;
   noPct: number;
@@ -28,8 +29,10 @@ function OptionPill({
   const isYes = side === "YES";
   return (
     <div
-      className={`flex-1 px-3.5 py-3 rounded-xl flex items-baseline justify-between font-sans ${
-        isYes ? "bg-yes-bg" : "bg-no-bg"
+      className={`flex-1 px-3.5 py-3 rounded-xl flex items-baseline justify-between font-sans transition-all duration-150 group-hover:scale-[1.015] active:scale-[0.985] ${
+        isYes
+          ? "bg-yes-bg group-hover:ring-2 group-hover:ring-yes/30"
+          : "bg-no-bg group-hover:ring-2 group-hover:ring-no/30"
       }`}
     >
       <span
@@ -55,11 +58,19 @@ function OptionPill({
   );
 }
 
+function EmptyState() {
+  return (
+    <div className="px-3.5 py-3 rounded-xl border border-dashed border-line-hard text-center text-[12px] text-sub font-sans transition-colors group-hover:border-text group-hover:text-text">
+      暂无投注 · 抢首发 →
+    </div>
+  );
+}
+
 export function MarketCard({ m }: { m: MarketCardData }) {
   return (
     <Link
       href={`/market/${m.id}`}
-      className="block mx-[18px] mb-3.5 p-4 bg-surface rounded-2xl border border-line font-sans"
+      className="group block mx-[18px] mb-3.5 p-4 bg-surface rounded-2xl border border-line font-sans transition-all duration-150 hover:border-line-hard hover:shadow-md active:scale-[0.995]"
     >
       <div className="flex items-center gap-2 mb-2.5 text-[11px] text-sub">
         <span className="px-2 py-0.5 bg-chip rounded text-text font-semibold">
@@ -89,10 +100,14 @@ export function MarketCard({ m }: { m: MarketCardData }) {
       <div className="text-[13px] text-sub leading-[1.5] mb-3.5 line-clamp-2">
         {m.description}
       </div>
-      <div className="flex gap-2">
-        <OptionPill side="YES" pct={m.yesPct} odd={m.yesOdd} />
-        <OptionPill side="NO" pct={m.noPct} odd={m.noOdd} />
-      </div>
+      {m.hasParticipants ? (
+        <div className="flex gap-2">
+          <OptionPill side="YES" pct={m.yesPct} odd={m.yesOdd} />
+          <OptionPill side="NO" pct={m.noPct} odd={m.noOdd} />
+        </div>
+      ) : (
+        <EmptyState />
+      )}
     </Link>
   );
 }

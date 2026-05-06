@@ -120,17 +120,25 @@ export default async function MarketDetailPage({
               {participantsCount.toLocaleString()} 人参与
             </span>
           </div>
-          <div className="flex h-2 rounded overflow-hidden mb-2 bg-line">
-            <div className="bg-yes" style={{ width: `${yesPct}%` }} />
-          </div>
-          <div className="flex justify-between font-mono text-[13px]">
-            <span className="text-yes font-bold">
-              YES {yesPct}%·×{yesOdd}
-            </span>
-            <span className="text-no font-bold">
-              NO {noPct}%·×{noOdd}
-            </span>
-          </div>
+          {participantsCount > 0 ? (
+            <>
+              <div className="flex h-2 rounded overflow-hidden mb-2 bg-line">
+                <div className="bg-yes" style={{ width: `${yesPct}%` }} />
+              </div>
+              <div className="flex justify-between font-mono text-[13px]">
+                <span className="text-yes font-bold">
+                  YES {yesPct}%·×{yesOdd}
+                </span>
+                <span className="text-no font-bold">
+                  NO {noPct}%·×{noOdd}
+                </span>
+              </div>
+            </>
+          ) : (
+            <div className="text-center text-sub text-[13px] py-3 border border-dashed border-line-hard rounded">
+              暂无投注 · 你的下注会决定首发赔率
+            </div>
+          )}
           {user && (
             <div className="flex gap-3.5 mt-3 pt-2.5 border-t border-line text-[11px] text-sub">
               <span>

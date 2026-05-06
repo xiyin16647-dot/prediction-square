@@ -6,6 +6,7 @@ export interface RailItem {
   title: string;
   category: CategoryKey;
   isAi: boolean;
+  hasParticipants: boolean;
   yesPct: number;
   noPct: number;
   yesOdd?: string;
@@ -48,7 +49,7 @@ export function MarketRail({ title, meta, hint, items, variant }: RailProps) {
             key={`${variant}-${it.id}`}
             href={`/market/${it.id}`}
             style={{ width: cardWidth }}
-            className="shrink-0 p-2.5 bg-surface text-text rounded-xl border border-line font-sans flex flex-col gap-1.5"
+            className="shrink-0 p-2.5 bg-surface text-text rounded-xl border border-line font-sans flex flex-col gap-1.5 transition-all duration-150 hover:border-line-hard hover:shadow-sm active:scale-[0.985]"
           >
             <div className="flex items-center gap-1.5 text-[10.5px] text-sub">
               <span className="px-1.5 rounded-[3px] bg-chip text-text font-semibold">
@@ -72,14 +73,20 @@ export function MarketRail({ title, meta, hint, items, variant }: RailProps) {
             >
               {it.title}
             </div>
-            <div className="flex justify-between font-mono text-[10.5px]">
-              <span className="text-yes font-bold">
-                YES {it.yesPct}%{it.yesOdd ? `·${it.yesOdd}` : ""}
-              </span>
-              <span className="text-no font-bold">
-                NO {it.noPct}%{it.noOdd ? `·${it.noOdd}` : ""}
-              </span>
-            </div>
+            {it.hasParticipants ? (
+              <div className="flex justify-between font-mono text-[10.5px]">
+                <span className="text-yes font-bold">
+                  YES {it.yesPct}%{it.yesOdd ? `·${it.yesOdd}` : ""}
+                </span>
+                <span className="text-no font-bold">
+                  NO {it.noPct}%{it.noOdd ? `·${it.noOdd}` : ""}
+                </span>
+              </div>
+            ) : (
+              <div className="text-[10.5px] text-sub font-sans text-center py-0.5 border-t border-dashed border-line">
+                暂无投注
+              </div>
+            )}
           </Link>
         ))}
       </div>

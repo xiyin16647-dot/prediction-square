@@ -113,18 +113,18 @@ export function BetSheet(props: BetSheetProps) {
           余额不足或已达单市场上限
         </div>
       ) : (
-        <div className="flex gap-2">
+        <div className="flex gap-2.5">
           <button
             type="button"
             onClick={() => startBet("YES")}
-            className="flex-1 py-3.5 rounded-xl bg-yes text-bg font-bold text-[15px]"
+            className="flex-1 min-h-[52px] rounded-xl bg-yes text-bg font-bold text-[15px] shadow-md transition-all duration-150 hover:brightness-110 hover:shadow-lg active:scale-[0.96] active:shadow-sm"
           >
             下注 YES · ×{props.yesOdd}
           </button>
           <button
             type="button"
             onClick={() => startBet("NO")}
-            className="flex-1 py-3.5 rounded-xl bg-no text-bg font-bold text-[15px]"
+            className="flex-1 min-h-[52px] rounded-xl bg-no text-bg font-bold text-[15px] shadow-md transition-all duration-150 hover:brightness-110 hover:shadow-lg active:scale-[0.96] active:shadow-sm"
           >
             下注 NO · ×{props.noOdd}
           </button>
@@ -245,7 +245,7 @@ export function BetSheet(props: BetSheetProps) {
                 type="button"
                 onClick={submit}
                 disabled={loading || stake < 1 || stake > cap}
-                className={`flex-1 py-3.5 rounded-xl text-bg font-bold text-[15px] disabled:opacity-50 ${
+                className={`flex-1 min-h-[52px] rounded-xl text-bg font-bold text-[15px] shadow-md transition-all duration-150 hover:brightness-110 hover:shadow-lg active:scale-[0.96] disabled:opacity-50 disabled:hover:brightness-100 disabled:active:scale-100 ${
                   side === "YES" ? "bg-yes" : "bg-no"
                 }`}
               >

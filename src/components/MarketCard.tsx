@@ -13,18 +13,14 @@ export interface MarketCardData {
   deadline: string;
   yesPct: number;
   noPct: number;
-  yesOdd: string;
-  noOdd: string;
 }
 
 function OptionPill({
   side,
   pct,
-  odd,
 }: {
   side: "YES" | "NO";
   pct: number;
-  odd: string;
 }) {
   const isYes = side === "YES";
   return (
@@ -40,19 +36,12 @@ function OptionPill({
       >
         {side}
       </span>
-      <span>
-        <span
-          className={`text-[18px] font-bold ${isYes ? "text-yes" : "text-no"}`}
-          style={{ letterSpacing: "-0.3px" }}
-        >
-          {pct}
-          <span className="text-[11px]">%</span>
-        </span>
-        <span
-          className={`text-[10px] ml-1 ${isYes ? "text-yes" : "text-no"} opacity-70`}
-        >
-          ×{odd}
-        </span>
+      <span
+        className={`text-[18px] font-bold ${isYes ? "text-yes" : "text-no"}`}
+        style={{ letterSpacing: "-0.3px" }}
+      >
+        {pct}
+        <span className="text-[11px]">%</span>
       </span>
     </div>
   );
@@ -102,8 +91,8 @@ export function MarketCard({ m }: { m: MarketCardData }) {
       </div>
       {m.hasParticipants ? (
         <div className="flex gap-2">
-          <OptionPill side="YES" pct={m.yesPct} odd={m.yesOdd} />
-          <OptionPill side="NO" pct={m.noPct} odd={m.noOdd} />
+          <OptionPill side="YES" pct={m.yesPct} />
+          <OptionPill side="NO" pct={m.noPct} />
         </div>
       ) : (
         <EmptyState />

@@ -38,11 +38,6 @@ export function pctOf(price: Decimal): number {
   return Math.round(price.mul(100).toNumber());
 }
 
-export function priceToOdds(price: Decimal): string {
-  if (price.lte(0)) return "∞";
-  return new Decimal(1).div(price).toFixed(2);
-}
-
 export function formatRelativeTime(date: Date): string {
   const ms = Date.now() - date.getTime();
   const min = Math.floor(ms / 60000);

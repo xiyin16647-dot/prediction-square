@@ -12,7 +12,6 @@ import {
   type CategoryKey,
   poolToPrice,
   pctOf,
-  priceToOdds,
   formatRelativeTime,
   formatCountdown,
   formatDeadline,
@@ -137,8 +136,6 @@ export default async function HomePage({
       deadline: formatDeadline(m.closesAt),
       yesPct: pctOf(yesPrice),
       noPct: pctOf(noPrice),
-      yesOdd: priceToOdds(yesPrice),
-      noOdd: priceToOdds(noPrice),
     };
   }
 
@@ -172,8 +169,6 @@ export default async function HomePage({
         hasParticipants: (countMap.get(m.id) ?? 0) > 0,
         yesPct: pctOf(yesPrice),
         noPct: pctOf(noPrice),
-        yesOdd: priceToOdds(yesPrice),
-        noOdd: priceToOdds(noPrice),
         rightLabel: formatCountdown(m.closesAt),
         rightTone: "warning",
       };

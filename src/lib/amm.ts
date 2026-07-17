@@ -12,6 +12,15 @@ export interface BuyResult {
   newPoolYes: Decimal;
   newPoolNo: Decimal;
   avgPrice: Decimal;
+  priceBefore: Decimal;
+  priceAfter: Decimal;
+  slippage: Decimal;
+}
+
+export function marginalPrice(state: AmmState, side: "YES" | "NO"): Decimal {
+  const total = state.poolYes.add(state.poolNo);
+  if (total.lte(0)) return new Decimal(0.5);
+  return side === "YES" ? state.poolNo.div(total) : state.poolYes.div(total);
 }
 
 /**
@@ -20,6 +29,9 @@ export interface BuyResult {
  * 2. 反方份额全部投入池子
  * 3. 池子按 k = poolYes×poolNo 还原另一方
  * 4. 用户最终持有 = amountIn + (旧池减去的份额)
+ *
+ * slippage = (avgPrice - priceBefore) / priceBefore
+ *   即用户实际成交均价比共识价高出的比例。
  */
 export function calcBuy(
   state: AmmState,
@@ -27,21 +39,42 @@ export function calcBuy(
   side: "YES" | "NO",
 ): BuyResult {
   const k = state.poolYes.mul(state.poolNo);
+  const priceBefore = marginalPrice(state, side);
+
+  let sharesOut: Decimal;
+  let newPoolYes: Decimal;
+  let newPoolNo: Decimal;
+
   if (side === "YES") {
-    const newPoolNo = state.poolNo.add(amountIn);
-    const newPoolYes = k.div(newPoolNo);
+    newPoolNo = state.poolNo.add(amountIn);
+    newPoolYes = k.div(newPoolNo);
     const sharesFromPool = state.poolYes.sub(newPoolYes);
-    const sharesOut = amountIn.add(sharesFromPool);
-    const avgPrice = amountIn.div(sharesOut);
-    return { sharesOut, newPoolYes, newPoolNo, avgPrice };
+    sharesOut = amountIn.add(sharesFromPool);
   } else {
-    const newPoolYes = state.poolYes.add(amountIn);
-    const newPoolNo = k.div(newPoolYes);
+    newPoolYes = state.poolYes.add(amountIn);
+    newPoolNo = k.div(newPoolYes);
     const sharesFromPool = state.poolNo.sub(newPoolNo);
-    const sharesOut = amountIn.add(sharesFromPool);
-    const avgPrice = amountIn.div(sharesOut);
-    return { sharesOut, newPoolYes, newPoolNo, avgPrice };
+    sharesOut = amountIn.add(sharesFromPool);
   }
+
+  const avgPrice = amountIn.div(sharesOut);
+  const priceAfter = marginalPrice(
+    { poolYes: newPoolYes, poolNo: newPoolNo },
+    side,
+  );
+  const slippage = priceBefore.gt(0)
+    ? avgPrice.sub(priceBefore).div(priceBefore)
+    : new Decimal(0);
+
+  return {
+    sharesOut,
+    newPoolYes,
+    newPoolNo,
+    avgPrice,
+    priceBefore,
+    priceAfter,
+    slippage,
+  };
 }
 
 export function fairValue(

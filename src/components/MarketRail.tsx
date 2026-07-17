@@ -9,8 +9,6 @@ export interface RailItem {
   hasParticipants: boolean;
   yesPct: number;
   noPct: number;
-  yesOdd?: string;
-  noOdd?: string;
   rightLabel: string;
   rightTone?: "neutral" | "warning";
 }
@@ -76,10 +74,10 @@ export function MarketRail({ title, meta, hint, items, variant }: RailProps) {
             {it.hasParticipants ? (
               <div className="flex justify-between font-mono text-[10.5px]">
                 <span className="text-yes font-bold">
-                  YES {it.yesPct}%{it.yesOdd ? `·${it.yesOdd}` : ""}
+                  YES {it.yesPct}%
                 </span>
                 <span className="text-no font-bold">
-                  NO {it.noPct}%{it.noOdd ? `·${it.noOdd}` : ""}
+                  NO {it.noPct}%
                 </span>
               </div>
             ) : (

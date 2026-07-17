@@ -11,6 +11,7 @@ const TradeSchema = z.object({
   marketId: z.string().min(1),
   side: z.enum(["YES", "NO"]),
   amountIn: z.number().positive().max(1_000_000),
+  acceptedSlippage: z.number().min(0).max(1).optional(),
 });
 
 const PER_USER_PER_MARKET_CAP = new Decimal(5000);
@@ -38,8 +39,10 @@ export async function POST(request: Request) {
     );
   }
 
-  const { marketId, side, amountIn: amountInRaw } = parsed.data;
+  const { marketId, side, amountIn: amountInRaw, acceptedSlippage } = parsed.data;
   const amountIn = new Decimal(amountInRaw);
+  const slippageCap =
+    acceptedSlippage !== undefined ? new Decimal(acceptedSlippage) : null;
 
   if (amountIn.lt(1)) {
     return NextResponse.json(
@@ -99,6 +102,13 @@ export async function POST(request: Request) {
 
         // 计算 AMM 出来的份额
         const buy = calcBuy({ poolYes, poolNo }, amountIn, side);
+
+        // 滑点保护：用户提交时设的容忍度，若实际滑点超出则拒绝
+        if (slippageCap !== null && buy.slippage.gt(slippageCap)) {
+          throw new Error(
+            `市场刚有变动，实际滑点 ${buy.slippage.mul(100).toFixed(1)}% 超过你设置的上限`,
+          );
+        }
 
         // 更新市场池子
         await tx.market.update({
@@ -185,6 +195,8 @@ export async function POST(request: Request) {
         return {
           sharesOut: Number(buy.sharesOut.toFixed(4)),
           avgPrice: Number(buy.avgPrice.toFixed(6)),
+          slippage: Number(buy.slippage.toFixed(6)),
+          priceAfter: Number(buy.priceAfter.toFixed(6)),
           newBalance: Number(newBalance.toFixed(4)),
           newPoolYes: buy.newPoolYes.toFixed(4),
           newPoolNo: buy.newPoolNo.toFixed(4),
